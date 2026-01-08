@@ -137,9 +137,7 @@ p{
 </div>
 
 <!-- 🎵 MUSIC -->
-<audio id="music" loop>
-  <source src="birthday.mp3" type="audio/mpeg">
-</audio>
+<audio id="music" loop preload="auto"></audio>
 
 <script>
 /* PARTICLES BACKGROUND */
@@ -172,10 +170,18 @@ function animate(){
 animate();
 
 /* START */
-const start = document.getElementById("start");
-const music = document.getElementById("music");
-
 start.onclick = () => {
+  start.style.display = "none";
+
+  music.src = "birthday.mp3";
+  music.muted = false;
+  music.volume = 0.4;
+  music.currentTime = 0;
+  music.play();
+
+  startFloating();
+};
+
   start.style.display = "none";
 
   /* MUSIC FADE IN */
