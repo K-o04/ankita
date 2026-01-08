@@ -1,61 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Happy Birthday Vishakha</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400&display=swap" rel="stylesheet">
 
 <style>
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
-html, body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+body {
+  min-height: 100vh;
   font-family: 'Inter', sans-serif;
   background: radial-gradient(circle at top, #5b1a24, #1a070a);
-  color: white;
-}
-
-canvas {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-}
-
-.container {
-  height: 100%;
+  color: #fff;
   display: flex;
-  align-items: center;
   justify-content: center;
-  text-align: center;
-  padding: 2rem;
+  align-items: center;
+  overflow: hidden;
 }
 
-h2 {
-  letter-spacing: .3em;
-  opacity: .7;
-  margin-bottom: 1rem;
-}
-
-h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(2.5rem, 8vw, 4rem);
-  margin-bottom: 1rem;
-}
-
-p {
-  max-width: 600px;
-  line-height: 1.7;
-  font-size: 1rem;
-}
-
+/* Start screen */
 #start {
   position: fixed;
   inset: 0;
@@ -68,94 +38,94 @@ p {
   z-index: 10;
 }
 
-.float {
-  position: fixed;
-  font-size: 22px;
-  opacity: .35;
-  animation: rise linear forwards;
+/* Main content */
+.container {
+  text-align: center;
+  padding: 2rem;
 }
 
-@keyframes rise {
-  from { transform: translateY(0); }
-  to { transform: translateY(-130vh); }
+h2 {
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  opacity: 0.7;
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.4rem, 7vw, 4rem);
+  margin-bottom: 1rem;
+}
+
+p {
+  max-width: 520px;
+  margin: 0 auto;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+/* Floating items */
+.float {
+  position: fixed;
+  bottom: -40px;
+  font-size: 22px;
+  opacity: 0.35;
+  animation: floatUp linear forwards;
+  pointer-events: none;
+}
+
+@keyframes floatUp {
+  from {
+    transform: translateY(0) rotate(0deg);
+  }
+  to {
+    transform: translateY(-120vh) rotate(360deg);
+  }
 }
 </style>
 </head>
 
 <body>
 
-<canvas id="bg"></canvas>
-
 <div id="start">TAP TO BEGIN</div>
 
 <div class="container">
-  <div>
-    <h2>HAPPY BIRTHDAY</h2>
-    <h1>Vishakha</h1>
-    <p>
-      Wishing you a day filled with warmth, calm moments,
-      and happiness that stays with you.
-    </p>
-  </div>
+  <h2>HAPPY BIRTHDAY</h2>
+  <h1>Vishakha</h1>
+  <p>
+    Wishing you a day filled with calm moments,
+    genuine smiles, and happiness that stays.
+  </p>
 </div>
 
 <audio id="music" preload="auto"></audio>
 
 <script>
-/* Background dots */
-const c = document.getElementById("bg");
-const ctx = c.getContext("2d");
-c.width = innerWidth;
-c.height = innerHeight;
-
-const dots = Array.from({length:50},()=>({
-  x:Math.random()*c.width,
-  y:Math.random()*c.height,
-  r:Math.random()*1.5,
-  v:Math.random()*0.3+0.1
-}));
-
-function animate(){
-  ctx.clearRect(0,0,c.width,c.height);
-  dots.forEach(d=>{
-    ctx.beginPath();
-    ctx.arc(d.x,d.y,d.r,0,Math.PI*2);
-    ctx.fillStyle="rgba(255,220,220,.4)";
-    ctx.fill();
-    d.y -= d.v;
-    if(d.y < 0) d.y = c.height;
-  });
-  requestAnimationFrame(animate);
-}
-animate();
-
-/* Start */
 const start = document.getElementById("start");
 const music = document.getElementById("music");
 
-start.onclick = () => {
+start.addEventListener("click", () => {
   start.style.display = "none";
 
+  // MUSIC — browser safe
   music.src = "birthday.mp3";
   music.volume = 0.4;
-  music.play();
+  music.currentTime = 0;
+  music.play().catch(() => {});
 
-  setInterval(()=>{
+  // Floating stars + flowers (low count, stable)
+  const emojis = ["🌸", "✨"];
+  setInterval(() => {
     const el = document.createElement("div");
     el.className = "float";
-    el.textContent = Math.random() > .5 ? "✨" : "🌸";
-    el.style.left = Math.random()*100 + "%";
-    el.style.top = "80%";
-    el.style.animationDuration = (16+Math.random()*6)+"s";
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    el.style.left = Math.random() * 100 + "%";
+    el.style.animationDuration = (18 + Math.random() * 6) + "s";
     document.body.appendChild(el);
-    setTimeout(()=>el.remove(),22000);
-  },2000);
-};
 
-onresize = ()=>{
-  c.width = innerWidth;
-  c.height = innerHeight;
-};
+    setTimeout(() => el.remove(), 25000);
+  }, 1800);
+});
 </script>
 
 </body>
